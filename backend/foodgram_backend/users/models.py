@@ -12,7 +12,6 @@ class User(AbstractUser):
         validators=[username_validator,],
         verbose_name='Юзернейм'
     )
-    bio = models.TextField('Биография', blank=True)
     avatar = models.ImageField(
         upload_to='users/',
         null=True,
