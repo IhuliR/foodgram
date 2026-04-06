@@ -1,7 +1,7 @@
 frontend/node_modules
 infra/frontend/build
 .env
-
+backup_files/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -64,6 +64,7 @@ coverage.xml
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+db.sqlite3.bak
 
 # Flask stuff:
 instance/
