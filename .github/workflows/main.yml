@@ -169,7 +169,7 @@ jobs:
             sleep 5
             sudo docker compose -f docker-compose.yml exec -T backend python manage.py migrate --noinput
             sudo docker compose -f docker-compose.yml exec -T backend python manage.py collectstatic --noinput
-            sudo docker compose -f docker-compose.yml exec -T backend python manage.py load_data --noinput
+            sudo docker compose -f docker-compose.yml exec -T backend python manage.py load_data
 
   send_message:
     runs-on: ubuntu-latest
