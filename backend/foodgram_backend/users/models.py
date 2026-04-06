@@ -9,7 +9,7 @@ class User(AbstractUser):
     username = models.CharField(
         unique=True,
         max_length=MAX_USERNAME_LEN,
-        validators=[username_validator,],
+        validators=[username_validator],
         verbose_name='Юзернейм'
     )
     avatar = models.ImageField(
