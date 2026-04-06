@@ -77,14 +77,6 @@ class AvatarSerializer(serializers.ModelSerializer):
         fields = ('avatar',)
 
 
-# class AvatarGetSerializer(serializers.ModelSerializer):
-#     avatar = serializers.ImageField(read_only=True)
-
-#     class Meta:
-#         model = User
-#         fields = ('avatar',)
-
-
 class RecipeSmallSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -311,12 +303,3 @@ class SetPasswordSerializer(serializers.Serializer):
         user.set_password(self.validated_data['new_password'])
         user.save(update_fields=['password'])
         return user
-
-
-# class ShortLinkSerializer(serializers.Serializer):
-#     short_link = serializers.URLField()
-
-#     def to_representation(self, instance):
-#         return {
-#             'short-link': instance['short_link']
-#         }
