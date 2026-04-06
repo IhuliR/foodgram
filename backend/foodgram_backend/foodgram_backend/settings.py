@@ -122,3 +122,5 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ]
 }
+
+SILENCED_SYSTEM_CHECKS = ['4_0.E001']
