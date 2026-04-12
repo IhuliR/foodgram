@@ -59,7 +59,7 @@ class IngredientAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         return queryset.annotate(recipes_total=Count('recipes'))
-    
+
     @admin.display(description='Всего рецептов')
     def recipes_count(self, obj):
         return obj.recipes_total
@@ -80,10 +80,11 @@ class TagAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         return queryset.annotate(recipes_total=Count('recipes'))
-    
+
     @admin.display(description='Всего рецептов')
     def recipes_count(self, obj):
         return obj.recipes_total
+
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):

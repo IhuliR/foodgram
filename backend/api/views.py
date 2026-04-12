@@ -129,7 +129,7 @@ class UserViewSet(DjoserUserViewSet):
                 {'errors': 'Нельзя подписаться на себя.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
         if request.method == 'POST':
             subscription, created = Subscription.objects.get_or_create(
                 user=user,
@@ -141,10 +141,10 @@ class UserViewSet(DjoserUserViewSet):
                     {'errors': 'Вы уже подписаны на этого пользователя.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            
+
             serializer = self.get_serializer(author)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
+
         deleted_count, _ = Subscription.objects.filter(
             user=user,
             author=author
@@ -177,7 +177,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 is_favorited=Value(False, output_field=BooleanField()),
                 is_in_shopping_cart=Value(False, output_field=BooleanField())
             )
-        
+
         favorited_by = Favorite.objects.filter(
             user=user,
             recipe=OuterRef('pk')
@@ -196,7 +196,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if self.action in ('create', 'update', 'partial_update'):
             return RecipeCreateSerializer
         return super().get_serializer_class()
-    
+
     def handle_user_recipe_relation(self, request, model):
         recipe = self.get_object()
         user = request.user
@@ -215,7 +215,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
             serializer = self.get_serializer(recipe)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
+
         deleted_count, _ = model.objects.filter(
             user=user,
             recipe=recipe
@@ -226,9 +226,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 {'errors': 'Элемент не найден.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
     def _update_and_serialize(self, request, partial=False):
         instance = self.get_object()
         serializer = self.get_serializer(
@@ -267,7 +267,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         return self._update_and_serialize(request, partial=False)
-    
+
     def partial_update(self, request, *args, **kwargs):
         return self._update_and_serialize(request, partial=True)
 

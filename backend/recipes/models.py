@@ -121,7 +121,7 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def save(self, *args, **kwargs):
         if not self.short_code:
             while True:
