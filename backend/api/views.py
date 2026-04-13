@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.db.models import Sum, Exists, OuterRef, Value, BooleanField
+from django.db.models import Sum
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
@@ -124,14 +124,13 @@ class UserViewSet(DjoserUserViewSet):
         author = self.get_object()
         user = request.user
 
-        if user == author:
-            return Response(
-                {'errors': 'Нельзя подписаться на себя.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
         if request.method == 'POST':
-            subscription, created = Subscription.objects.get_or_create(
+            if user == author:
+                return Response(
+                    {'errors': 'Нельзя подписаться на себя.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            _, created = Subscription.objects.get_or_create(
                 user=user,
                 author=author
             )
@@ -169,28 +168,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all().order_by('-pub_date')
 
     def get_queryset(self):
-        queryset = Recipe.objects.all().order_by('-pub_date')
         user = self.request.user
-
-        if user.is_anonymous:
-            return queryset.annotate(
-                is_favorited=Value(False, output_field=BooleanField()),
-                is_in_shopping_cart=Value(False, output_field=BooleanField())
-            )
-
-        favorited_by = Favorite.objects.filter(
-            user=user,
-            recipe=OuterRef('pk')
-        )
-        in_shopping_cart_by = ShoppingCart.objects.filter(
-            user=user,
-            recipe=OuterRef('pk')
-        )
-
-        return queryset.annotate(
-            is_favorited=Exists(favorited_by),
-            is_in_shopping_cart=Exists(in_shopping_cart_by)
-        )
+        return Recipe.objects.with_user_flags(user).order_by('-pub_date')
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):
@@ -229,24 +208,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def _update_and_serialize(self, request, partial=False):
-        instance = self.get_object()
-        serializer = self.get_serializer(
-            instance,
-            data=request.data,
-            partial=partial
-        )
-        serializer.is_valid(raise_exception=True)
-        recipe = serializer.save()
-
-        recipe = self.get_queryset().get(pk=recipe.pk)
-        read_serializer = RecipeReadSerializer(
-            recipe,
-            context={'request': request}
-        )
-
-        return Response(read_serializer.data, status=status.HTTP_200_OK)
-
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -266,10 +227,23 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
 
     def update(self, request, *args, **kwargs):
-        return self._update_and_serialize(request, partial=False)
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(
+            instance,
+            data=request.data,
+            partial=partial
+        )
+        serializer.is_valid(raise_exception=True)
+        recipe = serializer.save()
 
-    def partial_update(self, request, *args, **kwargs):
-        return self._update_and_serialize(request, partial=True)
+        recipe = self.get_queryset().get(pk=recipe.pk)
+        read_serializer = RecipeReadSerializer(
+            recipe,
+            context={'request': request}
+        )
+
+        return Response(read_serializer.data, status=status.HTTP_200_OK)
 
     @action(
         detail=True,

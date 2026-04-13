@@ -1,6 +1,7 @@
 import random
 
 from django.db import models
+from django.db.models import Exists, OuterRef, Value, BooleanField
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -70,7 +71,31 @@ class Ingredient(models.Model):
         return f'{self.name}, {self.measurement_unit}'
 
 
+class RecipeQuerySet(models.QuerySet):
+    def with_user_flags(self, user):
+        if user.is_anonymous:
+            return self.annotate(
+                is_favorited=Value(False, output_field=BooleanField()),
+                is_in_shopping_cart=Value(False, output_field=BooleanField())
+            )
+
+        favorited_by = Favorite.objects.filter(
+            user=user,
+            recipe=OuterRef('pk')
+        )
+        in_shopping_cart_by = ShoppingCart.objects.filter(
+            user=user,
+            recipe=OuterRef('pk')
+        )
+
+        return self.annotate(
+            is_favorited=Exists(favorited_by),
+            is_in_shopping_cart=Exists(in_shopping_cart_by)
+        )        
+
+
 class Recipe(models.Model):
+    objects = RecipeQuerySet.as_manager()
     name = models.CharField(
         max_length=MAX_RECIPE_NAME_LEN,
         verbose_name='Название'
@@ -171,13 +196,13 @@ class RecipeIngredient(models.Model):
 
 class Favorite(RecipeForUserBase):
 
-    class Meta:
+    class Meta(RecipeForUserBase.Meta):
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
 
 
 class ShoppingCart(RecipeForUserBase):
 
-    class Meta:
+    class Meta(RecipeForUserBase.Meta):
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'

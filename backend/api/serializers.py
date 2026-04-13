@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
@@ -119,8 +120,14 @@ class IngredientForRecipeSerializer(serializers.ModelSerializer):
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
-    is_in_shopping_cart = serializers.BooleanField(read_only=True)
-    is_favorited = serializers.BooleanField(read_only=True)
+    is_in_shopping_cart = serializers.BooleanField(
+        read_only=True,
+        default=False
+    )
+    is_favorited = serializers.BooleanField(
+        read_only=True,
+        default=False
+    )
     author = UserReadSerializer(read_only=True)
     tags = TagSerializer(read_only=True, many=True)
     ingredients = IngredientForRecipeSerializer(
@@ -202,6 +209,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
         return attrs
 
+    @transaction.atomic
     def create(self, validated_data):
         ingredients_data = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
@@ -217,6 +225,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
         return recipe
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         ingredients_data = validated_data.pop('ingredients', None)
         tags = validated_data.pop('tags', None)
