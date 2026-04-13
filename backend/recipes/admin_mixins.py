@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.db.models import Count
 
+
 class RecipesCountAdminMixin:
 
     def get_queryset(self, request):

@@ -91,7 +91,7 @@ class RecipeQuerySet(models.QuerySet):
         return self.annotate(
             is_favorited=Exists(favorited_by),
             is_in_shopping_cart=Exists(in_shopping_cart_by)
-        )        
+        )
 
 
 class Recipe(models.Model):
