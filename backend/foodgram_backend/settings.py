@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-from django.core.management.utils import get_random_secret_key
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -11,9 +10,9 @@ DATA_DIR = BASE_DIR / 'data'
 
 load_dotenv(ROOT_DIR / '.env')
 
-SECRET_KEY = os.getenv('SECRET_KEY', get_random_secret_key())
+SECRET_KEY = os.environ['SECRET_KEY']
 
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
@@ -120,7 +119,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 
-    'DEFULT_FILTER_BACKENDS': [
+    'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
     ]
 }
@@ -143,3 +142,25 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 SILENCED_SYSTEM_CHECKS = ['4_0.E001']
+
+DJANGO_ADMIN_URL = os.getenv('DJANGO_ADMIN_URL', 'admin/')
+
+if not DJANGO_ADMIN_URL.endswith('/'):
+    DJANGO_ADMIN_URL += '/'
+
+SECURE_SSL_REDIRECT = os.getenv(
+    'SECURE_SSL_REDIRECT',
+    'False'
+).lower() == 'true'
+
+SESSION_COOKIE_SECURE = os.getenv(
+    'SESSION_COOKIE_SECURE',
+    'False'
+).lower() == 'true'
+
+CSRF_COOKIE_SECURE = os.getenv(
+    'CSRF_COOKIE_SECURE',
+    'False'
+).lower() == 'true'
+
+SECURE_HSTS_SECONDS = int(os.getenv('SECURE_HSTS_SECONDS', '0'))

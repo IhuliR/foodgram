@@ -1,4 +1,4 @@
-import { Title, Container, Main } from '../../components'
+import { Container, Main } from '../../components'
 import styles from './styles.module.css'
 import MetaTags from 'react-meta-tags'
 
@@ -29,6 +29,30 @@ const Technologies = () => {
               </li>
               <li className={styles.textItem}>
                 Djoser
+              </li>
+              <li className={styles.textItem}>
+                django-filter
+              </li>
+              <li className={styles.textItem}>
+                PostgreSQL
+              </li>
+              <li className={styles.textItem}>
+                Docker
+              </li>
+              <li className={styles.textItem}>
+                Docker Compose
+              </li>
+              <li className={styles.textItem}>
+                Gunicorn
+              </li>
+              <li className={styles.textItem}>
+                Nginx
+              </li>
+              <li className={styles.textItem}>
+                REST API
+              </li>
+              <li className={styles.textItem}>
+                Token authentication
               </li>
             </ul>
           </div>

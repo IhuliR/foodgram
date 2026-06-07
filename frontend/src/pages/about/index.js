@@ -1,4 +1,4 @@
-import { Title, Container, Main } from '../../components'
+import { Container, Main } from '../../components'
 import styles from './styles.module.css'
 import MetaTags from 'react-meta-tags'
 
@@ -15,20 +15,19 @@ const About = ({ updateOrders, orders }) => {
       <h1 className={styles.title}>Привет!</h1>
       <div className={styles.content}>
         <div>
-          <h2 className={styles.subtitle}>Что это за сайт?</h2>
+          <h2 className={styles.subtitle}>Это Foodgram — приложение для тех, кто любит готовить.</h2>
           <div className={styles.text}>
             <p className={styles.textItem}>
-              Представляю вам проект, созданный во время обучения в Яндекс Практикуме. Этот проект — часть учебного курса, но он создан полностью самостоятельно.
+              Здесь можно публиковать рецепты, добавлять ингредиенты и время приготовления, сохранять блюда в избранное, подписываться на авторов и скачивать список продуктов для выбранных рецептов.
             </p>
             <p className={styles.textItem}>
-              Цель этого сайта — дать возможность пользователям создавать и хранить рецепты на онлайн-платформе. Кроме того, можно скачать список продуктов, необходимых для
-              приготовления блюда, просмотреть рецепты друзей и добавить любимые рецепты в список избранных.
+              Проект был разработан в рамках обучения backend-разработке, но доработан и развёрнут как полноценное веб-приложение: с API, авторизацией, базой данных, контейнеризацией и публикацией на сервере.
             </p>
             <p className={styles.textItem}>
-              Чтобы использовать все возможности сайта — нужна регистрация. Проверка адреса электронной почты не осуществляется, вы можете ввести любой email. 
+              Основная цель проекта — показать полный цикл разработки backend-приложения: от проектирования моделей и API до деплоя, настройки веб-сервера и подготовки проекта к работе в сети.
             </p>
             <p className={styles.textItem}>
-              Заходите и делитесь своими любимыми рецептами!
+              Если вы читаете это, значит, у меня всё получилось! Буду рад сотрудничеству. <a href="https://vk.com/mafakkafox" className={styles.textLink}>Мой ВК</a>
             </p>
           </div>
         </div>
@@ -38,10 +37,13 @@ const About = ({ updateOrders, orders }) => {
           </h2>
           <div className={styles.text}>
             <p className={styles.textItem}>
-              Код проекта находится тут - <a href="#" className={styles.textLink}>Github</a>
+              Код проекта находится тут - <a href="https://github.com/IhuliR/foodgram" className={styles.textLink}>Github</a>
             </p>
             <p className={styles.textItem}>
-              Автор проекта: <a href="#" className={styles.textLink}>Имя Автора</a>
+              Автор проекта: <a href="https://github.com/IhuliR" className={styles.textLink}>Илья Рощин</a>
+            </p>
+            <p className={styles.textItem}>
+              А ещё я написал книгу, лол: <a href="https://eksmo.ru/ebook/ty-ITDA34972/" className={styles.textLink}>Её уже не купить, если интересно, свяжитесь со мной</a>
             </p>
           </div>
         </aside>

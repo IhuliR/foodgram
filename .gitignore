@@ -140,4 +140,12 @@ dmypy.json
 .vscode
 
 static/
+media/.DS_Store
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Media files
+backend/media/
 media/
