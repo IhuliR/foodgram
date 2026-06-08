@@ -21,12 +21,15 @@ services:
       - db
   frontend:
     image: ihulir/foodgram_frontend
-    env_file: .env
+    env_file: 
+      - .env
     command: cp -r /app/build/. /frontend_static/
     volumes:
       - static:/frontend_static
   gateway:
     image: ihulir/foodgram_gateway
+    env_file:
+      - .env
     ports:
       - "80:80"
       - "443:443"

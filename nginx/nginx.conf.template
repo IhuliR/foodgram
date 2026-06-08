@@ -1,30 +1,18 @@
 server {
     listen 80;
-    server_name foodgramir.duckdns.org;
+    server_name ${NGINX_SERVER_NAME};
     client_max_body_size 10M;
+    index index.html;
+    server_tokens off;
 
     location ^~ /.well-known/acme-challenge/ {
         root /var/www/certbot;
         try_files $uri =404;
     }
 
-    location / {
-        return 301 https://$host$request_uri;
-    }
-}
-
-server {
-    listen 443 ssl;
-    server_name foodgramir.duckdns.org;
-    client_max_body_size 10M;
-    index index.html;
-    server_tokens off;
-
-    ssl_certificate /etc/letsencrypt/live/foodgramir.duckdns.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/foodgramir.duckdns.org/privkey.pem;
-
     location /api/ {
         proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
         proxy_pass http://backend:8000/api/;
     }
 
@@ -33,9 +21,10 @@ server {
         try_files $uri $uri/redoc.html;
     }
 
-    location /admin/ {
+    location /${DJANGO_ADMIN_URL} {
         proxy_set_header Host $host;
-        proxy_pass http://backend:8000/admin/;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass http://backend:8000/${DJANGO_ADMIN_URL};
     }
 
     location /media/ {
@@ -44,6 +33,7 @@ server {
 
     location /s/ {
         proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
         proxy_pass http://backend:8000;
     }
 
