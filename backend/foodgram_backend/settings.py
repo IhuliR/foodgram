@@ -164,3 +164,5 @@ CSRF_COOKIE_SECURE = os.getenv(
 ).lower() == 'true'
 
 SECURE_HSTS_SECONDS = int(os.getenv('SECURE_HSTS_SECONDS', '0'))
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
