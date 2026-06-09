@@ -1,14 +1,27 @@
 server {
     listen 80;
     server_name ${NGINX_SERVER_NAME};
-    client_max_body_size 10M;
-    index index.html;
-    server_tokens off;
 
     location ^~ /.well-known/acme-challenge/ {
         root /var/www/certbot;
         try_files $uri =404;
     }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name ${NGINX_SERVER_NAME};
+
+    ssl_certificate /etc/letsencrypt/live/${NGINX_CERT_DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${NGINX_CERT_DOMAIN}/privkey.pem;
+
+    client_max_body_size 10M;
+    index index.html;
+    server_tokens off;
 
     location /api/ {
         proxy_set_header Host $host;
